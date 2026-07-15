@@ -1,0 +1,8 @@
+{
+    "name": "mohamed/restaurant-fullstack",
+    "description": "Full-stack restaurant website with PHP, MySQL and AWS S3 image storage",
+    "require": {
+        "php": ">=8.0",
+        "aws/aws-sdk-php": "^3.300"
+    }
+}
