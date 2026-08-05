@@ -1,0 +1,55 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: restaurant-mysql
+    restart: unless-stopped
+
+    environment:
+      MYSQL_DATABASE: restaurant_db
+      MYSQL_USER: restaurant_user
+      MYSQL_PASSWORD: restaurant_password
+      MYSQL_ROOT_PASSWORD: root_password_change_me
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysqladmin ping -h localhost -uroot -proot_password_change_me
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+
+    networks:
+      - restaurant-network
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: restaurant-web
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    ports:
+      - "8080:80"
+
+    networks:
+      - restaurant-network
+
+volumes:
+  mysql-data:
+
+networks:
+  restaurant-network:
+    driver: bridge

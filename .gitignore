@@ -1,0 +1,8 @@
+.env
+vendor/
+*.log
+*.pem
+.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
